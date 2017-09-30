@@ -1,9 +1,7 @@
-package com.sidorii.scheduler.model.jobs.configurations;
+package com.sidorii.scheduler.model.job.configuration;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.sidorii.scheduler.model.tasks.HttpTask;
+import com.sidorii.scheduler.model.task.HttpTask;
 
-@JsonRootName("body")
 public class HttpJobConfiguration extends JobConfiguration {
 
     private HttpTask task;

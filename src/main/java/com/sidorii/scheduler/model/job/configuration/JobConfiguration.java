@@ -1,16 +1,15 @@
-package com.sidorii.scheduler.model.jobs.configurations;
+package com.sidorii.scheduler.model.job.configuration;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.TimeZone;
 
-@JsonRootName("body")
+
 public abstract class JobConfiguration {
 
 

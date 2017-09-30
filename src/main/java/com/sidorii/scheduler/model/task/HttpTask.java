@@ -1,4 +1,4 @@
-package com.sidorii.scheduler.model.tasks;
+package com.sidorii.scheduler.model.task;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.sidorii.scheduler.model.CustomHttpHeaders;

@@ -3,8 +3,9 @@ package com.sidorii.scheduler.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
-import com.sidorii.scheduler.model.jobs.configurations.HttpJobConfiguration;
-import com.sidorii.scheduler.model.tasks.HttpTask;
+import com.sidorii.scheduler.model.job.configuration.HttpJobConfiguration;
+import com.sidorii.scheduler.model.task.HttpTask;
+import com.sidorii.scheduler.util.BodyWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,13 +37,12 @@ public class ScheduleControllerTest {
     private HttpJobConfiguration jobConfiguration;
     private ObjectMapper mapper;
     private String json;
+    private ScheduleController controller;
 
     @Before
     public void setUp() throws MalformedURLException, JsonProcessingException {
         mapper = new ObjectMapper();
-//        mapper.enable(DeserializationFeature.UNWRAP_ROOT_VALUE);
-//        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
-
+        controller = new ScheduleController();
         jobConfiguration = new HttpJobConfiguration();
 
         HttpTask task = new HttpTask();
@@ -62,28 +63,37 @@ public class ScheduleControllerTest {
         jobConfiguration.setStartTime(time);
         jobConfiguration.setScheduledAt("test");
         jobConfiguration.setExecuteTimes(10);
-        jobConfiguration.setCallbackUrl(new URL("http://sdvsdv.com"));
+        jobConfiguration.setCallbackUrl(new URL("http://test.com"));
         jobConfiguration.setTimeZone(TimeZone.getTimeZone("UA"));
 
-        json = mapper.writeValueAsString(jobConfiguration);
+        json = mapper.writeValueAsString(new BodyWrapper<>(jobConfiguration));
     }
 
     @Test
-    public void testHttpTask() throws Exception {
-
-        ScheduleController controller = new ScheduleController();
+    public void testCreateHttpTask() throws Exception {
 
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        System.out.println("JSON: " + json);
+        String resultJson = "{\"body\":{\"job_id\":\"1\"}}";
 
-        mockMvc.perform(post("/")
+        mockMvc.perform(post("/jobs")
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isCreated())
                 .andExpect(content()
-                        .json(json));
+                        .json(resultJson));
     }
+
+    @Test
+    public void testGetTask() throws Exception {
+
+        MockMvc mockMvc = standaloneSetup(controller).build();
+
+        mockMvc.perform(delete("/jobs/1"))
+                .andExpect(content().json("{\"code\":\"200\",\"message\":\"job deleted successfully\"}"))
+                .andExpect(status().isOk());
+    }
+
 }
