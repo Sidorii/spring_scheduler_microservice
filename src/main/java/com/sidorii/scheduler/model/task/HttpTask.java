@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
 import org.springframework.http.HttpMethod;
 
+import java.io.Serializable;
 import java.net.URL;
 
 
 @JsonRootName("task")
-public class HttpTask {
+public class HttpTask implements Serializable {
 
     private HttpMethod method;
     private URL url;
@@ -57,6 +58,7 @@ public class HttpTask {
     public void setData(String data) {
         this.data = data;
     }
+
 
 
     @Override
