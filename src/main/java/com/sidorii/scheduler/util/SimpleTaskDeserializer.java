@@ -12,7 +12,7 @@ import com.sidorii.scheduler.model.task.Task;
 
 import java.io.IOException;
 
-public class SimpleDeserializer extends JsonDeserializer<Task> {
+public class SimpleTaskDeserializer extends JsonDeserializer<Task> {
     private static ObjectMapper mapper = new ObjectMapper();
 
 

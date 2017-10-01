@@ -6,10 +6,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sidorii.scheduler.model.task.Task;
-import com.sidorii.scheduler.util.SimpleDeserializer;
-import org.springframework.validation.annotation.Validated;
+import com.sidorii.scheduler.util.SimpleTaskDeserializer;
 
-import javax.validation.constraints.NotNull;
 import java.net.URL;
 import java.util.Date;
 import java.util.TimeZone;
@@ -32,7 +30,7 @@ public class JobConfiguration {
     }
 
 
-    @JsonDeserialize(using = SimpleDeserializer.class)
+    @JsonDeserialize(using = SimpleTaskDeserializer.class)
     public void setTask(Task task) {
         this.task = task;
     }
