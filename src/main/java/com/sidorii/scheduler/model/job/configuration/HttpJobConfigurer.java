@@ -3,6 +3,7 @@ package com.sidorii.scheduler.model.job.configuration;
 import com.sidorii.scheduler.model.exception.ConfigurationException;
 import com.sidorii.scheduler.model.job.HttpJob;
 import com.sidorii.scheduler.model.task.HttpTask;
+import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
 
@@ -15,11 +16,11 @@ public class HttpJobConfigurer implements JobConfigurer {
     @Override
     public JobDetail buildJob(JobConfiguration configuration) throws ConfigurationException {
 
-        if (!(configuration instanceof HttpJobConfiguration)) {
+        if (!configuration.getType().equals("http")) {
             throw new ConfigurationException("Cannot configure HttpJob from not HttpConfiguration instance");
         }
 
-        HttpTask task = ((HttpJobConfiguration) configuration).getTask();
+        Task task =  configuration.getTask();
 
         JobDetail job = newJob(HttpJob.class)
                 .usingJobData("task", task.toString())

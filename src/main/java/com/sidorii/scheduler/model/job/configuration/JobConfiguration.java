@@ -4,13 +4,17 @@ package com.sidorii.scheduler.model.job.configuration;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sidorii.scheduler.model.task.Task;
+import com.sidorii.scheduler.util.SimpleDeserializer;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.net.URL;
 import java.util.Date;
 import java.util.TimeZone;
 
-
-public abstract class JobConfiguration {
+public class JobConfiguration {
 
 
     private String type;
@@ -21,11 +25,21 @@ public abstract class JobConfiguration {
     private TimeZone timeZone;
     private URL callbackUrl;
 
+    private Task task;
+
+    public Task getTask() {
+        return task;
+    }
+
+
+    @JsonDeserialize(using = SimpleDeserializer.class)
+    public void setTask(Task task) {
+        this.task = task;
+    }
 
     //    Getters
-    public String getType() {
-        return type;
-    }
+    @JsonGetter("type")
+    public String getType(){return type;};
 
     @JsonGetter("scheduled_at")
     public String getScheduledAt() {
@@ -59,6 +73,7 @@ public abstract class JobConfiguration {
 
 
     //    Setters
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }

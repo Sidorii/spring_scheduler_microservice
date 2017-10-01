@@ -8,8 +8,7 @@ import java.io.Serializable;
 import java.net.URL;
 
 
-@JsonRootName("task")
-public class HttpTask implements Serializable {
+public class HttpTask implements Serializable, Task {
 
     private HttpMethod method;
     private URL url;
@@ -58,6 +57,7 @@ public class HttpTask implements Serializable {
     public void setData(String data) {
         this.data = data;
     }
+
 
 
 

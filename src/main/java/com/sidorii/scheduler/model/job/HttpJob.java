@@ -8,7 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component
+
 public class HttpJob implements Job {
 
     private HttpTask task;
@@ -19,10 +19,10 @@ public class HttpJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         //should use RequestEntity<>()
-        switch (task.getMethod()){
-            case GET:
-                template.getForEntity(...)
-        }
+//        switch (task.getMethod()){
+//            case GET:
+//                template.getForEntity(...)
+//        }
 
     }
 

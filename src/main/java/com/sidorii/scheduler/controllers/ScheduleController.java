@@ -1,6 +1,6 @@
 package com.sidorii.scheduler.controllers;
 
-import com.sidorii.scheduler.model.job.configuration.HttpJobConfiguration;
+import com.sidorii.scheduler.model.job.configuration.JobConfiguration;
 import com.sidorii.scheduler.util.BodyWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ public class ScheduleController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public BodyWrapper<Map> createHttpTask(@RequestBody BodyWrapper<HttpJobConfiguration> configuration) {
+    public BodyWrapper<Map> createHttpTask(@RequestBody BodyWrapper<JobConfiguration> configuration) {
 
         Properties properties = new Properties();
         properties.setProperty("job_id", "1");
