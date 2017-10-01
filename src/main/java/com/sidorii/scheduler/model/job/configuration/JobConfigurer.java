@@ -9,5 +9,5 @@ public interface JobConfigurer {
 
     JobDetail buildJob(JobConfiguration configuration) throws ConfigurationException;
 
-    Trigger buildTrigger(JobConfiguration configuration);
+    Trigger buildTrigger(JobConfiguration configuration) throws ConfigurationException;
 }

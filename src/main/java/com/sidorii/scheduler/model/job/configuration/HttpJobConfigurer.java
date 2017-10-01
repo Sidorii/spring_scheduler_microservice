@@ -29,7 +29,7 @@ public class HttpJobConfigurer implements JobConfigurer {
     }
 
     @Override
-    public Trigger buildTrigger(JobConfiguration configuration) {
+    public Trigger buildTrigger(JobConfiguration configuration) throws ConfigurationException {
 
         return newTrigger()
                 .withSchedule(cronSchedule(configuration.getScheduledAt())
