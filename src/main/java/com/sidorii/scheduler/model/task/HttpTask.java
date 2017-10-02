@@ -3,12 +3,13 @@ package com.sidorii.scheduler.model.task;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.net.URL;
 
-
-public class HttpTask implements Serializable, Task {
+@Component
+public class HttpTask implements Task {
 
     private HttpMethod method;
     private URL url;

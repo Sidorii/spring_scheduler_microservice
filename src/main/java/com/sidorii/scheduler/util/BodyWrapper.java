@@ -16,7 +16,7 @@ public class BodyWrapper<T> {
         return body;
     }
 
-    public static final <U> BodyWrapper<U> wrap(U body) {
+    public static <U> BodyWrapper<U> wrap(U body) {
         return new BodyWrapper<>(body);
     }
 }

@@ -3,7 +3,7 @@ package com.sidorii.scheduler.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
-import com.sidorii.scheduler.model.job.configuration.JobConfiguration;
+import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.model.task.HttpTask;
 import com.sidorii.scheduler.util.BodyWrapper;
 import org.junit.Before;
@@ -69,7 +69,6 @@ public class ScheduleControllerTest {
         jobConfiguration.setTimeZone(TimeZone.getTimeZone("UA"));
 
         json = mapper.writeValueAsString(new BodyWrapper<>(jobConfiguration));
-
     }
 
     @Test

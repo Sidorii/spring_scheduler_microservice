@@ -1,4 +1,4 @@
-package com.sidorii.scheduler.model.job.configuration;
+package com.sidorii.scheduler.model.job.config;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
