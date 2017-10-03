@@ -2,6 +2,7 @@ package com.sidorii.scheduler.model.job;
 
 import com.sidorii.scheduler.model.repository.TaskRepository;
 import com.sidorii.scheduler.model.task.Task;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
+@DisallowConcurrentExecution
 public class SimpleJob implements Job {
 
 

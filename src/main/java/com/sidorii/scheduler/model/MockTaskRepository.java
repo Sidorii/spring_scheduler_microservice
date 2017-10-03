@@ -1,5 +1,6 @@
-package com.sidorii.scheduler.model.repository;
+package com.sidorii.scheduler.model;
 
+import com.sidorii.scheduler.model.repository.TaskRepository;
 import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobKey;
 

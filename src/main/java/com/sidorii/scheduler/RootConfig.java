@@ -1,6 +1,6 @@
 package com.sidorii.scheduler;
 
-import com.sidorii.scheduler.model.repository.MockTaskRepository;
+import com.sidorii.scheduler.model.MockTaskRepository;
 import com.sidorii.scheduler.model.repository.TaskRepository;
 import com.sidorii.scheduler.util.AutowiringSpringBeanJobFactory;
 import org.quartz.Scheduler;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 @Configuration
@@ -25,8 +26,9 @@ public class RootConfig {
 
 
     @Bean
-    public SchedulerFactory schedulerFactory() throws SchedulerException {
+    public SchedulerFactory schedulerFactory() throws SchedulerException{
         StdSchedulerFactory factory = new StdSchedulerFactory();
+        factory.initialize(new ClassPathResource("quartz.properties").getPath());
 
         return factory;
     }
@@ -36,7 +38,6 @@ public class RootConfig {
         Scheduler scheduler = schedulerFactory().getScheduler();
         scheduler.setJobFactory(jobFactory());
         scheduler.start();
-
         return scheduler;
     }
 
@@ -48,10 +49,8 @@ public class RootConfig {
         return jobFactory;
     }
 
-
-    //for tests
     @Bean
-    public TaskRepository taskRepository() {
+    public TaskRepository repository() {
         return new MockTaskRepository();
     }
 }

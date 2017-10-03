@@ -1,30 +1,43 @@
 package com.sidorii.scheduler.model.service;
 
-import com.sidorii.scheduler.model.exception.JobNotFoundException;
-import org.quartz.*;
+import com.sidorii.scheduler.model.repository.ScheduleRepository;
+import com.sidorii.scheduler.model.repository.TaskRepository;
+import com.sidorii.scheduler.model.task.Task;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-//    TODO: Add ScheduleRepository and fix boilerplate exceptions
-
-    private Scheduler scheduler;
 
     @Autowired
-    public ScheduleServiceImpl(Scheduler scheduler) throws SchedulerException {
-        this.scheduler = scheduler;
+    @Qualifier("scheduleRepository")
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private TaskRepository repository;
+
+
+    public void setScheduleRepository(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
     }
 
+    public void setRepository(TaskRepository repository) {
+        this.repository = repository;
+    }
 
+    @Transactional
     @Override
-    public void addJob(JobDetail detail, Trigger trigger) {
+    public void addJob(JobDetail detail, Task task, Trigger trigger) {
         try {
-            if (scheduler.checkExists(detail.getKey())){
-                throw new RuntimeException("Duplicating job while adding new instance to ScheduleService");
-            }
-            scheduler.scheduleJob(detail, trigger);
+            repository.addTask(task, detail.getKey());
+            scheduleRepository.addJob(detail,trigger);
 
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -33,11 +46,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteJob(JobKey key) {
         try {
-            throwIfAbsent(key,"deleteJob()");
-            scheduler.deleteJob(key);
+            scheduleRepository.deleteJob(key);
+            repository.deleteTaskForJob(key);
 
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -45,11 +59,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+
     @Override
     public JobDetail getJobById(JobKey key) {
         try {
-            throwIfAbsent(key, "getJobById()");
-            return scheduler.getJobDetail(key);
+            return scheduleRepository.getJobById(key);
 
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -57,11 +71,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @Transactional
     @Override
     public void suspendJob(JobKey key) {
         try {
-            throwIfAbsent(key, "suspendJob()");
-            scheduler.pauseJob(key);
+            scheduleRepository.suspendJob(key);
 
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -69,21 +83,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @Transactional
     @Override
     public void resumeJob(JobKey key) {
         try {
-            throwIfAbsent(key, "resumeJob()");
-            scheduler.resumeJob(key);
+            scheduleRepository.resumeJob(key);
+
         } catch (SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed resuming job [ " + key + " ]. Nested exception: " + e);
-        }
-    }
-
-    private void throwIfAbsent(JobKey key, String method) throws SchedulerException{
-        if (!scheduler.checkExists(key)) {
-            throw new JobNotFoundException("Job with key = " + key +
-                    " not found while proceeding " + method + " method");
         }
     }
 }

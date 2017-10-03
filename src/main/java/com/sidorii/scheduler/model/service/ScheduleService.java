@@ -1,12 +1,14 @@
 package com.sidorii.scheduler.model.service;
 
+import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
 public interface ScheduleService {
 
-    void addJob(JobDetail detail, Trigger trigger);
+    void addJob(JobDetail detail, Task task, Trigger trigger);
 
     void deleteJob(JobKey key);
 

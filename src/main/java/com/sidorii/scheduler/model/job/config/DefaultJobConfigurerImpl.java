@@ -16,12 +16,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class DefaultJobConfigurerImpl implements JobConfigurer {
 
 
-    @Autowired
-    private TaskRepository repository;
 
-    public void setRepository(TaskRepository repository) {
-        this.repository = repository;
-    }
 
 
     @Override
@@ -29,9 +24,9 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
 
         JobDetail detail = newJob(SimpleJob.class)
                 .storeDurably(true)
+                .usingJobData("type",configuration.getType())
                 .build();
 
-        repository.addTask(configuration.getTask(), detail.getKey());
         return detail;
     }
 
