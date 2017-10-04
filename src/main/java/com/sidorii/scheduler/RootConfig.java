@@ -1,7 +1,11 @@
 package com.sidorii.scheduler;
 
 import com.sidorii.scheduler.model.MockTaskRepository;
-import com.sidorii.scheduler.model.repository.TaskRepository;
+import com.sidorii.scheduler.model.executors.HttpExecutorAdapter;
+import com.sidorii.scheduler.model.executors.HttpTaskExecutor;
+import com.sidorii.scheduler.model.repository.TaskService;
+import com.sidorii.scheduler.model.task.Task;
+import com.sidorii.scheduler.model.task.TaskExecutor;
 import com.sidorii.scheduler.util.AutowiringSpringBeanJobFactory;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -50,7 +54,7 @@ public class RootConfig {
     }
 
     @Bean
-    public TaskRepository repository() {
+    public TaskService repository() {
         return new MockTaskRepository();
     }
 }

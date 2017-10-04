@@ -1,6 +1,7 @@
 package com.sidorii.scheduler.model.task;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;

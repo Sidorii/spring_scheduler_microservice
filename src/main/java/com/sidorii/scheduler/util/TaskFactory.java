@@ -4,7 +4,7 @@ import com.sidorii.scheduler.model.exception.TaskNotFoundException;
 import com.sidorii.scheduler.model.task.HttpTask;
 import com.sidorii.scheduler.model.task.Task;
 
-public class TaskFactory {
+public class TaskFactory{
 
     public static Task findTaskByType(String type) {
 
@@ -15,4 +15,5 @@ public class TaskFactory {
                 throw new TaskNotFoundException("Not required task for type " + type);
         }
     }
+
 }

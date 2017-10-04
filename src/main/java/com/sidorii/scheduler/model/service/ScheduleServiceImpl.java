@@ -1,7 +1,7 @@
 package com.sidorii.scheduler.model.service;
 
 import com.sidorii.scheduler.model.repository.ScheduleRepository;
-import com.sidorii.scheduler.model.repository.TaskRepository;
+import com.sidorii.scheduler.model.repository.TaskService;
 import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -21,14 +21,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     private ScheduleRepository scheduleRepository;
 
     @Autowired
-    private TaskRepository repository;
+    private TaskService repository;
 
 
     public void setScheduleRepository(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
     }
 
-    public void setRepository(TaskRepository repository) {
+    public void setRepository(TaskService repository) {
         this.repository = repository;
     }
 

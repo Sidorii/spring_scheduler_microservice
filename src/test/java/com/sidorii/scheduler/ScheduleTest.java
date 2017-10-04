@@ -6,6 +6,7 @@ import com.sidorii.scheduler.model.job.config.DefaultJobConfigurerImpl;
 import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.model.service.ScheduleService;
 import com.sidorii.scheduler.model.task.HttpTask;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.MalformedURLException;
@@ -37,6 +39,9 @@ public class ScheduleTest {
     @Autowired
     public ScheduleService service;
 
+    @Autowired
+    public JdbcTemplate template;
+
     private JobConfiguration jobConfiguration;
 
     @Before
@@ -46,7 +51,7 @@ public class ScheduleTest {
         HttpTask task = new HttpTask();
         Date time = Date.from(Instant.now());
         Date entTime = new Date(time.getTime() + 300000);
-        task.setUrl(new URL("http://result.com"));
+        task.setUrl(new URL("http://localhost:8080/test"));
         task.setMethod(HttpMethod.PUT);
 
 
@@ -61,7 +66,7 @@ public class ScheduleTest {
         jobConfiguration.setTask(task);
         jobConfiguration.setEndTime(entTime);
         jobConfiguration.setStartTime(time);
-        jobConfiguration.setScheduledAt("0/2 * * * * ?");
+        jobConfiguration.setScheduledAt("0/5 * * * * ?");
         jobConfiguration.setExecuteTimes(100);
         jobConfiguration.setTimeZone(TimeZone.getTimeZone("UA"));
     }
@@ -78,6 +83,7 @@ public class ScheduleTest {
     }
 
     @Test
+    @Ignore
     public void testScheduleSimpleTriger() throws ConfigurationException, InterruptedException, SchedulerException {
 
         jobConfiguration.setScheduledAt(null);

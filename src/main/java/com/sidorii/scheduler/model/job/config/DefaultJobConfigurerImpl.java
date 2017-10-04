@@ -2,9 +2,7 @@ package com.sidorii.scheduler.model.job.config;
 
 import com.sidorii.scheduler.model.exception.ConfigurationException;
 import com.sidorii.scheduler.model.job.SimpleJob;
-import com.sidorii.scheduler.model.repository.TaskRepository;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
@@ -14,10 +12,6 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 @Component
 public class DefaultJobConfigurerImpl implements JobConfigurer {
-
-
-
-
 
     @Override
     public JobDetail buildJob(JobConfiguration configuration) throws ConfigurationException {
@@ -53,7 +47,8 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
                     .withRepeatCount(configuration.getExecuteTimes())
                     .withIntervalInMilliseconds(calculateRepeatInterval(configuration));
         } else {
-            throw new ConfigurationException("Scheduling configuration failed. Check your schedule properties.");
+            throw new ConfigurationException("Scheduling configuration failed. Check your schedule properties." +
+                    "Scheduled at: " + configuration.getScheduledAt() + " , Execute times: " + configuration.getExecuteTimes());
         }
     }
 

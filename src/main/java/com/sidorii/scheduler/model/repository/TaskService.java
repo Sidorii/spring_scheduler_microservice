@@ -3,7 +3,7 @@ package com.sidorii.scheduler.model.repository;
 import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobKey;
 
-public interface TaskRepository {
+public interface TaskService {
 
 //    TODO: Implement me
 
