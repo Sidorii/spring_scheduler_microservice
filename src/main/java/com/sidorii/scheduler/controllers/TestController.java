@@ -2,6 +2,9 @@ package com.sidorii.scheduler.controllers;
 
 import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.util.BodyWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
+
     @RequestMapping(method = RequestMethod.POST)
-    public BodyWrapper<String> test(BodyWrapper configuration) {
-        System.out.println("In test controller!!!!!!!!!!!!!!!!!!!!");
-        return BodyWrapper.wrap("Operation successfully!");
+    public String test(@RequestBody String string) {
+        LOGGER.debug("Executing test() method in TestController");
+        return "Operation successfully!";
     }
 }

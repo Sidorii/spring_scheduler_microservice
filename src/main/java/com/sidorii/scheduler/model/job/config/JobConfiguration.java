@@ -1,10 +1,7 @@
 package com.sidorii.scheduler.model.job.config;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.sidorii.scheduler.model.task.Task;
 import com.sidorii.scheduler.util.TaskTypeResolver;
@@ -48,8 +45,6 @@ public class JobConfiguration {
         return type;
     }
 
-    ;
-
     @JsonGetter("scheduled_at")
     public String getScheduledAt() {
         return scheduledAt;
@@ -61,13 +56,13 @@ public class JobConfiguration {
     }
 
     @JsonGetter("start_time")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public Date getStartTime() {
         return startTime;
     }
 
     @JsonGetter("end_time")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public Date getEndTime() {
         return endTime;
     }
@@ -90,13 +85,13 @@ public class JobConfiguration {
     }
 
     @JsonSetter("end_time")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
     @JsonSetter("start_time")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }

@@ -10,6 +10,7 @@ import com.sidorii.scheduler.util.BodyWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -39,12 +40,13 @@ public class ScheduleControllerTest {
     private JobConfiguration jobConfiguration;
     private ObjectMapper mapper;
     private String json;
+
+    @Autowired
     private ScheduleController controller;
 
     @Before
     public void setUp() throws MalformedURLException, JsonProcessingException {
         mapper = new ObjectMapper();
-        controller = new ScheduleController();
         jobConfiguration = new JobConfiguration();
 
         HttpTask task = new HttpTask();

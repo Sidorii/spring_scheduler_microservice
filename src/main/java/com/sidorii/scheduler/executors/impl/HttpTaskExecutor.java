@@ -1,14 +1,11 @@
-package com.sidorii.scheduler.model.executors;
+package com.sidorii.scheduler.executors.impl;
 
+import com.sidorii.scheduler.executors.AdvancedTaskExecutor;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
-import com.sidorii.scheduler.model.task.AdvancedTaskExecutor;
 import com.sidorii.scheduler.model.task.HttpTask;
-import com.sidorii.scheduler.model.task.TaskExecutor;
-import com.sidorii.scheduler.util.BodyWrapper;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +16,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Component
-public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask>{
+public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask> {
 
     private RestTemplate template;
 
     public HttpTaskExecutor() {
         template = new RestTemplate();
     }
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void executeTask(HttpTask task, JobExecutionContext context) {
@@ -36,14 +35,14 @@ public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask>{
             URI uri = task.getUrl().toURI();
             String data = task.getData();
 
-            RequestEntity<BodyWrapper<String>> request = new RequestEntity<>(BodyWrapper.wrap(data),method, uri);
+            RequestEntity<String> request = new RequestEntity<>(data,httpHeaders,method, uri);
+            LOGGER.info("Sending request [{}] on URI: {}",request,uri);
             ResponseEntity<String> response =
                     template.exchange(request, String.class);
 
-            System.out.println(response.getBody());
-
+            LOGGER.info("Response body after execution: {} ", response.getBody());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
     }

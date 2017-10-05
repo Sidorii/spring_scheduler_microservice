@@ -62,9 +62,26 @@ public class HttpTask implements Task {
 
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HttpTask)) return false;
+
+        HttpTask httpTask = (HttpTask) o;
+
+        if (getMethod() != httpTask.getMethod()) return false;
+        if (getUrl() != null ? !getUrl().equals(httpTask.getUrl()) : httpTask.getUrl() != null) return false;
+        if (getHeaders() != null ? !getHeaders().equals(httpTask.getHeaders()) : httpTask.getHeaders() != null)
+            return false;
+        return getData() != null ? getData().equals(httpTask.getData()) : httpTask.getData() == null;
+    }
 
     @Override
-    public String toString() {
-        return "{ method: " + method + " url: " + url + " headers: " + headers + " body: " + data + " }";
+    public int hashCode() {
+        int result = getMethod() != null ? getMethod().hashCode() : 0;
+        result = 31 * result + (getUrl() != null ? getUrl().hashCode() : 0);
+        result = 31 * result + (getHeaders() != null ? getHeaders().hashCode() : 0);
+        result = 31 * result + (getData() != null ? getData().hashCode() : 0);
+        return result;
     }
 }

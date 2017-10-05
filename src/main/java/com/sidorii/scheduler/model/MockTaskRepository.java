@@ -1,6 +1,6 @@
 package com.sidorii.scheduler.model;
 
-import com.sidorii.scheduler.model.repository.TaskService;
+import com.sidorii.scheduler.repository.TaskRepository;
 import com.sidorii.scheduler.model.task.Task;
 import org.quartz.JobKey;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class MockTaskRepository implements TaskService {
+public class MockTaskRepository implements TaskRepository {
 
 
     public Map<JobKey, Task> repo = new HashMap<>();

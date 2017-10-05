@@ -1,11 +1,5 @@
 package com.sidorii.scheduler;
 
-import com.sidorii.scheduler.model.MockTaskRepository;
-import com.sidorii.scheduler.model.executors.HttpExecutorAdapter;
-import com.sidorii.scheduler.model.executors.HttpTaskExecutor;
-import com.sidorii.scheduler.model.repository.TaskService;
-import com.sidorii.scheduler.model.task.Task;
-import com.sidorii.scheduler.model.task.TaskExecutor;
 import com.sidorii.scheduler.util.AutowiringSpringBeanJobFactory;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -37,7 +31,7 @@ public class RootConfig {
         return factory;
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public Scheduler schedulerBean() throws SchedulerException {
         Scheduler scheduler = schedulerFactory().getScheduler();
         scheduler.setJobFactory(jobFactory());
@@ -51,10 +45,5 @@ public class RootConfig {
         jobFactory.setApplicationContext(context);
 
         return jobFactory;
-    }
-
-    @Bean
-    public TaskService repository() {
-        return new MockTaskRepository();
     }
 }

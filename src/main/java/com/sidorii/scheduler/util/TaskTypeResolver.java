@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
-import com.sidorii.scheduler.model.task.HttpTask;
 
 import java.io.IOException;
 

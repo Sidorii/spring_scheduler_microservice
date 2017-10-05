@@ -4,9 +4,8 @@ import com.sidorii.scheduler.model.CustomHttpHeaders;
 import com.sidorii.scheduler.model.exception.ConfigurationException;
 import com.sidorii.scheduler.model.job.config.DefaultJobConfigurerImpl;
 import com.sidorii.scheduler.model.job.config.JobConfiguration;
-import com.sidorii.scheduler.model.service.ScheduleService;
+import com.sidorii.scheduler.service.ScheduleService;
 import com.sidorii.scheduler.model.task.HttpTask;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -74,10 +72,7 @@ public class ScheduleTest {
     @Test //Cron trigger triggered
     public void testSchedule() throws ConfigurationException, InterruptedException, SchedulerException {
 
-        JobDetail detail = jobConfigurer.buildJob(jobConfiguration);
-        Trigger trigger = jobConfigurer.buildTrigger(jobConfiguration);
-
-        service.addJob(detail, jobConfiguration.getTask(), trigger);
+        service.addJob(jobConfiguration);
 
         Thread.sleep(10000);
     }
@@ -88,10 +83,7 @@ public class ScheduleTest {
 
         jobConfiguration.setScheduledAt(null);
 
-        JobDetail detail = jobConfigurer.buildJob(jobConfiguration);
-        Trigger trigger = jobConfigurer.buildTrigger(jobConfiguration);
-
-        service.addJob(detail, jobConfiguration.getTask(),trigger);
+        service.addJob(jobConfiguration);
 
         Thread.sleep(30000); //Expected: execution time 10. Required time: 20 seconds
     }
