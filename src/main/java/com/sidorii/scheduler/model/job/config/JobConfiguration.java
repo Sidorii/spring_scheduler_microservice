@@ -1,16 +1,16 @@
-package com.sidorii.scheduler.model.job.configuration;
+package com.sidorii.scheduler.model.job.config;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import com.sidorii.scheduler.model.task.Task;
+import com.sidorii.scheduler.util.TaskTypeResolver;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.TimeZone;
 
-
-public abstract class JobConfiguration {
+public class JobConfiguration {
 
 
     private String type;
@@ -22,7 +22,25 @@ public abstract class JobConfiguration {
     private URL callbackUrl;
 
 
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.CUSTOM,
+            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
+            property = "type")
+    @JsonTypeIdResolver(TaskTypeResolver.class)
+    private Task task;
+
+
+    public Task getTask() {
+        return task;
+    }
+
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
     //    Getters
+    @JsonGetter("type")
     public String getType() {
         return type;
     }
@@ -38,11 +56,13 @@ public abstract class JobConfiguration {
     }
 
     @JsonGetter("start_time")
+    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public Date getStartTime() {
         return startTime;
     }
 
     @JsonGetter("end_time")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public Date getEndTime() {
         return endTime;
     }
@@ -59,18 +79,19 @@ public abstract class JobConfiguration {
 
 
     //    Setters
+    @JsonSetter("type")
     public void setType(String type) {
         this.type = type;
     }
 
     @JsonSetter("end_time")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
     @JsonSetter("start_time")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -106,6 +127,7 @@ public abstract class JobConfiguration {
                 ", endTime=" + endTime +
                 ", timeZone=" + timeZone +
                 ", callbackUrl=" + callbackUrl +
+                ", task=" + task +
                 '}';
     }
 }

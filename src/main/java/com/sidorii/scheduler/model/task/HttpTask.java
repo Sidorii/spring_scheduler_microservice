@@ -1,14 +1,16 @@
 package com.sidorii.scheduler.model.task;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.net.URL;
 
-
-@JsonRootName("task")
-public class HttpTask {
+@Component
+public class HttpTask implements Task {
 
     private HttpMethod method;
     private URL url;
@@ -59,8 +61,27 @@ public class HttpTask {
     }
 
 
+
     @Override
-    public String toString() {
-        return "{ method: " + method + " url: " + url + " headers: " + headers + " body: " + data + " }";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HttpTask)) return false;
+
+        HttpTask httpTask = (HttpTask) o;
+
+        if (getMethod() != httpTask.getMethod()) return false;
+        if (getUrl() != null ? !getUrl().equals(httpTask.getUrl()) : httpTask.getUrl() != null) return false;
+        if (getHeaders() != null ? !getHeaders().equals(httpTask.getHeaders()) : httpTask.getHeaders() != null)
+            return false;
+        return getData() != null ? getData().equals(httpTask.getData()) : httpTask.getData() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getMethod() != null ? getMethod().hashCode() : 0;
+        result = 31 * result + (getUrl() != null ? getUrl().hashCode() : 0);
+        result = 31 * result + (getHeaders() != null ? getHeaders().hashCode() : 0);
+        result = 31 * result + (getData() != null ? getData().hashCode() : 0);
+        return result;
     }
 }
