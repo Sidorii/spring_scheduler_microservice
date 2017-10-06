@@ -33,7 +33,10 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
             {
                 put(TIME_ZONE, timeZone.getID());
                 put(TYPE, configuration.getType());
-                put(CALLBACK_URL, configuration.getCallbackUrl().toString());
+
+                if (configuration.getCallbackUrl() != null) {
+                    put(CALLBACK_URL, configuration.getCallbackUrl().toString());
+                }
             }
         };
 
