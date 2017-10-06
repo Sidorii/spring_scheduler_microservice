@@ -25,7 +25,4 @@ public class ResponseBody {
         return code;
     }
 
-    public HttpStatus getStatusCode() {
-        return HttpStatus.valueOf(code);
-    }
 }

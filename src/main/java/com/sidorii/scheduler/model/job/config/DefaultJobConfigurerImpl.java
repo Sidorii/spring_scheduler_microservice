@@ -138,7 +138,9 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         description.setLastRunResult(code, dataMap.getString(BODY));
 
         try {
-            description.setCallbackUrl(new URL(dataMap.getString(CALLBACK_URL)));
+            if (dataMap.containsKey(CALLBACK_URL)) {
+                description.setCallbackUrl(new URL(dataMap.getString(CALLBACK_URL)));
+            }
         } catch (MalformedURLException e) {
             LOGGER.error("Incorrect callback URL: {}", e.getMessage());
         }

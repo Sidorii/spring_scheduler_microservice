@@ -54,8 +54,9 @@ public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask> {
             LOGGER.info("Response body after execution: {} ", response.getBody());
 
 
-            jobData.put(JobConfigurer.CODE, response.getStatusCodeValue());
-            jobData.put(JobConfigurer.BODY, response.getBody());
+            jobData.replace(JobConfigurer.CODE, response.getStatusCodeValue());
+            jobData.replace(JobConfigurer.BODY, response.getBody());
+
 
             if (jobData.containsKey(JobConfigurer.CALLBACK_URL)) {
                 String callbackUrl = jobData.getString(JobConfigurer.CALLBACK_URL);

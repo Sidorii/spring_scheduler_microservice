@@ -26,6 +26,7 @@ public class SimpleJob implements Job {
     @Qualifier("httpExecutorAdapter")
     private TaskExecutor taskExecutor;
 
+
     public void setTaskExecutor(TaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
     }
