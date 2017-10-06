@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.TimeZone;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
@@ -20,17 +21,22 @@ import static org.quartz.TriggerBuilder.newTrigger;
 @Component
 public class DefaultJobConfigurerImpl implements JobConfigurer {
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJobConfigurerImpl.class);
 
 
     @Override
     public JobDetail buildJob(JobConfiguration configuration) throws ConfigurationException {
 
-        JobDataMap data = new JobDataMap();
-        data.put("time_zone", configuration.getTimeZone().getID());
-        data.put("type", configuration.getType());
-        data.put("callback_url", configuration.getCallbackUrl().toString());
+        TimeZone timeZone = configuration.getTimeZone();
+
+        JobDataMap data = new JobDataMap() {
+            {
+                put(TIME_ZONE, timeZone.getID());
+                put(TYPE, configuration.getType());
+                put(CALLBACK_URL, configuration.getCallbackUrl().toString());
+            }
+        };
+
 
         JobDetail detail = newJob(SimpleJob.class)
                 .usingJobData(data)
@@ -44,16 +50,19 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
     @Override
     public Trigger buildTrigger(JobConfiguration configuration) throws ConfigurationException {
 
+        Date startDate = configuration.getStartTime();
+        Date endDate = configuration.getEndTime();
+
+
         Trigger trigger = newTrigger()
                 .withSchedule(buildSchedule(configuration))
-                .startAt(configuration.getStartTime())
-                .endAt(configuration.getEndTime())
+                .startAt(startDate)
+                .endAt(endDate)
                 .build();
 
-        LOGGER.info("Building Trigger successfully over. Trigger: {}", trigger);
+        LOGGER.info("Building Trigger successfully over. Trigger: {}", trigger.getKey());
         return trigger;
     }
-
 
 
     @Override
@@ -63,7 +72,7 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         description.setTask(task);
 
         configureDescriptionByJobDetail(description, detail);
-        configureDescriptionByTriggerType(description,trigger);
+        configureDescriptionByTriggerType(description, trigger);
 
         return description;
     }
@@ -73,20 +82,25 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
 
         if (configuration.getScheduledAt() != null) {
             LOGGER.info("Cron schedule building...");
+
             return cronSchedule(configuration.getScheduledAt())
                     .inTimeZone(configuration.getTimeZone());
+
         } else if (configuration.getExecuteTimes() != null) {
             LOGGER.info("Simple schedule building...");
+
             return simpleSchedule()
                     .withRepeatCount(configuration.getExecuteTimes())
                     .withIntervalInMilliseconds(calculateRepeatInterval(configuration));
         } else {
             LOGGER.error("Configuration schedule failed. Wrong state of scheduledAt and executeTime parameters " +
                     "because they are null.");
+
             throw new ConfigurationException("Scheduling configuration failed. Check your schedule properties." +
                     "Scheduled at: " + configuration.getScheduledAt() + " , Execute times: " + configuration.getExecuteTimes());
         }
     }
+
 
     private void configureDescriptionByTriggerType(JobDescription description, Trigger trigger) {
 
@@ -100,8 +114,10 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         description.setEndTime(trigger.getEndTime());
 
         if (trigger instanceof SimpleTrigger) {
+
             description.setExecuteTimes(((SimpleTrigger) trigger).getTimesTriggered());
         } else if (trigger instanceof CronTrigger) {
+
             description.setScheduledAt(((CronTrigger) trigger).getCronExpression());
         }
     }
@@ -110,14 +126,16 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         JobDataMap dataMap = detail.getJobDataMap();
 
         description.setJobId(detail.getKey().getName());
-        description.setTimeZone(TimeZone.getTimeZone(dataMap.getString("time_zone")));
-        description.setType(dataMap.getString("type"));
-        Integer code = dataMap.getString("code") != null ?
-                Integer.parseInt(dataMap.getString("code")) : null;
-        description.setLastRunResult(code, dataMap.getString("body"));
+        description.setTimeZone(TimeZone.getTimeZone(dataMap.getString(TIME_ZONE)));
+        description.setType(dataMap.getString(TYPE));
+
+        Integer code = dataMap.containsKey(CODE) ?
+                Integer.parseInt(dataMap.getString(CODE)) : null;
+
+        description.setLastRunResult(code, dataMap.getString(BODY));
 
         try {
-            description.setCallbackUrl(new URL(dataMap.getString("callback_url")));
+            description.setCallbackUrl(new URL(dataMap.getString(CALLBACK_URL)));
         } catch (MalformedURLException e) {
             LOGGER.error("Incorrect callback URL: {}", e.getMessage());
         }

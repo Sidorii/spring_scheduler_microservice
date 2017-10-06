@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import static com.sidorii.scheduler.util.TaskFactory.findTaskByType;
 
-public class TaskTypeResolver extends TypeIdResolverBase{
+public class TaskTypeResolver extends TypeIdResolverBase {
 
     @Override
     public String idFromValue(Object o) {

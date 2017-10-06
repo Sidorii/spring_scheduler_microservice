@@ -1,18 +1,16 @@
 package com.sidorii.scheduler.model.task;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import java.net.URL;
 
-@Component
 public class HttpTask implements Task {
 
+    @NotNull(message = "{task.method}")
     private HttpMethod method;
+    @NotNull(message = "{task.url}")
     private URL url;
 
     private CustomHttpHeaders headers;
@@ -59,7 +57,6 @@ public class HttpTask implements Task {
     public void setData(String data) {
         this.data = data;
     }
-
 
 
     @Override

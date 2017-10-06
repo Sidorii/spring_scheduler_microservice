@@ -1,8 +1,8 @@
 package com.sidorii.scheduler.model.job;
 
 import com.sidorii.scheduler.executors.TaskExecutor;
-import com.sidorii.scheduler.repository.TaskRepository;
 import com.sidorii.scheduler.model.task.Task;
+import com.sidorii.scheduler.repository.TaskRepository;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -40,6 +40,6 @@ public class SimpleJob implements Job {
 
         Task task = repository.getTaskForJob(jobExecutionContext.getJobDetail().getKey());
 
-        taskExecutor.executeTask(task,jobExecutionContext);
+        taskExecutor.executeTask(task, jobExecutionContext);
     }
 }

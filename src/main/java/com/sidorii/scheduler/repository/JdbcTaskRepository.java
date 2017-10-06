@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 @Repository
 @PropertySource("classpath:task_queries.properties")
-public class JdbcTaskRepository implements TaskRepository{
+public class JdbcTaskRepository implements TaskRepository {
 
 
     private static Logger LOGGER = LoggerFactory.getLogger(JdbcTaskRepository.class);
@@ -42,7 +42,7 @@ public class JdbcTaskRepository implements TaskRepository{
     @Override
     public void addTask(Task task, JobKey key) {
 
-        checkNotNull("addTask()", task,key);
+        checkNotNull("addTask()", task, key);
 
         try {
             ByteArrayInputStream taskInput = TaskSerializer.serializeTask(task);
@@ -50,9 +50,9 @@ public class JdbcTaskRepository implements TaskRepository{
             template.update(CREATE, key.getName(), taskInput);
 
 
-            LOGGER.info("New task [{}] with key [{}] added in BD ",task,key);
+            LOGGER.info("New task with key [{}] added in BD ", key.getName());
         } catch (IOException e) {
-            LOGGER.error("Cannot add new task [{}] to DB: {}",task,e.getMessage());
+            LOGGER.error("Cannot add new task [{}] to DB: {}", task, e.getMessage());
             throw new TaskException("Failed to add new task to DB because: " + e.getCause());
         }
     }
@@ -72,7 +72,6 @@ public class JdbcTaskRepository implements TaskRepository{
     }
 
 
-
     protected static class TaskMapper implements RowMapper<Task> {
 
         protected static final TaskMapper INSTANCE = new TaskMapper();
@@ -85,12 +84,12 @@ public class JdbcTaskRepository implements TaskRepository{
                 return TaskSerializer.deserializeTask(blob);
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.error("Cannot deserialize Task instance from DB");
-                throw new TaskException("Cannot deserialize Task instance from DB",e);
+                throw new TaskException("Cannot deserialize Task instance from DB", e);
             }
         }
     }
 
-   protected static class TaskSerializer {
+    protected static class TaskSerializer {
 
         private static Task deserializeTask(Blob blobTask) throws SQLException, IOException, ClassNotFoundException {
             int blobLength = (int) blobTask.length();
@@ -117,8 +116,8 @@ public class JdbcTaskRepository implements TaskRepository{
         }
     }
 
-    private static void checkNotNull(String method,Object... objects) {
-        for (Object o: objects) {
+    private static void checkNotNull(String method, Object... objects) {
+        for (Object o : objects) {
             if (o == null) {
                 throw new TaskException("Failed to execute " + method + " because input is null");
             }

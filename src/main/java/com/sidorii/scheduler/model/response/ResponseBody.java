@@ -1,9 +1,7 @@
 package com.sidorii.scheduler.model.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseBody {
 
     private Integer code;
@@ -27,7 +25,7 @@ public class ResponseBody {
         return code;
     }
 
-//    public HttpStatus getStatusCode() {
-//        return HttpStatus.valueOf(code);
-//    }
+    public HttpStatus getStatusCode() {
+        return HttpStatus.valueOf(code);
+    }
 }

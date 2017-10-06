@@ -12,10 +12,10 @@ public class JobDescription extends JobConfiguration {
     private String jobId;
 
     @JsonProperty("next_run_at")
-    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
+    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss")
     private Date nextRunAt;
     @JsonProperty("last_run_at")
-    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss", timezone = "Europe/Kiev")
+    @JsonFormat(pattern = "YYYY-MM-dd hh:mm:ss")
     private Date lastRunAt;
     @JsonProperty("last_run_result")
     private ResponseBody lastRunResult;

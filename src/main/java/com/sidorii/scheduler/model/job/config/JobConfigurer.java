@@ -7,6 +7,13 @@ import org.quartz.Trigger;
 
 public interface JobConfigurer {
 
+    String TIME_ZONE = "time_zone";
+    String TYPE = "type";
+    String CALLBACK_URL = "callback_url";
+    String CODE = "code";
+    String BODY = "body";
+
+
     JobDetail buildJob(JobConfiguration configuration) throws ConfigurationException;
 
     Trigger buildTrigger(JobConfiguration configuration) throws ConfigurationException;

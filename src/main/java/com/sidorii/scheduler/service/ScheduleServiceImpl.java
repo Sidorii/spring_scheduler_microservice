@@ -39,7 +39,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public JobKey addJob(JobConfiguration configuration) throws ConfigurationException {
 
         if (configuration == null) {
-            LOGGER.error("JobConfiguretion is null");
+            LOGGER.error("JobConfiguration is null");
             throw new ConfigurationException("Cannot configure Job while configuration = null");
         }
 
@@ -54,7 +54,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             taskService.addTask(task, detail.getKey());
             SchedulerListener listener = new TaskSchedulerListener();
             scheduleRepository.addJob(detail, trigger, listener);
-            LOGGER.debug("New instance added: {}, {}, {}", detail, trigger, listener);
+            LOGGER.debug("New instance added: Job Detail [{}], Trigger [{}], Listener [{}]",
+                    detail.getKey().getName(), trigger.getKey().getName(), listener);
             return detail.getKey();
         } catch (SchedulerException e) {
             LOGGER.error(e.toString());
@@ -108,11 +109,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         @Override
         public void triggerFinalized(Trigger trigger) {
             JobKey jobKey = trigger.getJobKey();
-            LOGGER.debug("JobKey in TaskListener is: {}", jobKey);
             if (jobKey == null) {
                 LOGGER.warn("JobKey in TaskListener is null");
                 return;
             }
+            LOGGER.debug("JobKey in TaskListener is: {}", jobKey.getName());
 
             taskService.deleteTaskForJob(jobKey);
         }

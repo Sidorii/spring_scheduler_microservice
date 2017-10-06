@@ -19,7 +19,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Autowired
     public ScheduleRepositoryImpl(Scheduler scheduler) throws SchedulerException {
-        LOGGER.debug("Using schedule [{}] in ScheduleRepository ", scheduler);
+        LOGGER.debug("Using schedule [{}] in ScheduleRepository ", scheduler.getSchedulerName());
         this.scheduler = scheduler;
     }
 
@@ -34,7 +34,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         }
 
         scheduler.scheduleJob(detail, trigger);
-        LOGGER.info("Scheduling new job [{}] with trigger [{}]", key, trigger);
+        LOGGER.info("Scheduling new job [{}] with trigger [{}]", key.getName(), trigger.getKey().getName());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         throwNullOrAbsent(key, "deleteJob()");
 
         scheduler.deleteJob(key);
-        LOGGER.error("Job [{}] successfully removed", key);
+        LOGGER.error("Job [{}] successfully removed", key.getName());
     }
 
     @Override

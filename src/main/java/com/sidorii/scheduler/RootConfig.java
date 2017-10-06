@@ -24,7 +24,7 @@ public class RootConfig {
 
 
     @Bean
-    public SchedulerFactory schedulerFactory() throws SchedulerException{
+    public SchedulerFactory schedulerFactory() throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(new ClassPathResource("quartz.properties").getPath());
 

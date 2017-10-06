@@ -30,11 +30,11 @@ public class HttpExecutorAdapter implements TaskExecutor {
 
         if (!((task instanceof HttpTask) && jobDataMap.getString("type").equals("http"))) {
             LOGGER.error("Attempt to execute not HttpTask in HttpExecutorAdapter");
-            throw new JobExecutionException("Task type not supported for class: {}" + this.getClass().getName());
+            throw new JobExecutionException("Task type not supported for class:" + this.getClass().getName());
         }
 
         HttpTask httpTask = (HttpTask) task;
-        LOGGER.info("Delegate HttpTask [ {} ] to HttpTaskExecutor");
+        LOGGER.info("Delegate HttpTask [ {} ] to HttpTaskExecutor", httpTask);
         executor.executeTask(httpTask, context);
     }
 }

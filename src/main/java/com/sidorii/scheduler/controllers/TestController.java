@@ -1,7 +1,5 @@
 package com.sidorii.scheduler.controllers;
 
-import com.sidorii.scheduler.model.job.config.JobConfiguration;
-import com.sidorii.scheduler.util.BodyWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +17,6 @@ public class TestController {
     @RequestMapping(method = RequestMethod.POST)
     public String test(@RequestBody String string) {
         LOGGER.debug("Executing test() method in TestController");
-        return "Operation successfully!";
+        return "Operation successfully! Body: ".concat(string);
     }
 }

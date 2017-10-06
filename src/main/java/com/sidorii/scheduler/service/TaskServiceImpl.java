@@ -3,10 +3,7 @@ package com.sidorii.scheduler.service;
 import com.sidorii.scheduler.model.exception.TaskException;
 import com.sidorii.scheduler.model.task.Task;
 import com.sidorii.scheduler.repository.TaskRepository;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
-import org.quartz.Trigger;
-import org.quartz.TriggerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTaskForJob(JobKey key) {
         repository.deleteTaskForJob(key);
-        LOGGER.info("Task with key [{}] successfully deleted", key);
+        LOGGER.info("Task with key [{}] successfully deleted", key.getName());
     }
 
     @Override
@@ -58,8 +55,8 @@ public class TaskServiceImpl implements TaskService {
             return repository.getTaskForJob(key);
 
         } catch (DataAccessException e) {
-            LOGGER.error("Can't find Task with by key = {}", key);
-            throw new TaskException("Task with key = " + key + " does not exists");
+            LOGGER.error("Can't find Task with by key = {}", key.getName());
+            throw new TaskException("Task with key = " + key.getName() + " does not exists");
         }
     }
 }
