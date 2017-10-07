@@ -93,7 +93,7 @@ public class ScheduleControllerTest {
     @Test
     public void testCreateJobFromFullRequest() throws Exception {
 
-        JobKey jobKey = new JobKey("1");
+        String jobKey = "1";
         String expectedJson = "{\"body\": {\"job_id\": \"1\"}}";
 
 
@@ -136,8 +136,7 @@ public class ScheduleControllerTest {
         json = mapper.writeValueAsString(BodyWrapper.wrap(jobConfiguration));
 
 
-
-        JobKey jobKey = new JobKey("1");
+        String jobKey = "1";
         String expectedJson = "{\"body\": {\"job_id\": \"1\"}}";
 
 
@@ -164,7 +163,7 @@ public class ScheduleControllerTest {
 
         String expectedJson = mapper.writeValueAsString(BodyWrapper.wrap(description));
 
-        when(service.getJobDescription(any(JobKey.class)))
+        when(service.getJobDescription(any(String.class)))
                 .thenReturn(description);
 
         mockMvc.perform(get("/jobs/{job_key}",description.getJobId())
@@ -176,12 +175,13 @@ public class ScheduleControllerTest {
                         .json(expectedJson));
     }
 
-    @Test
+
+    @Test(expected = NestedServletException.class)
     public void testGetJobByWrongKey() throws Exception {
 
         String wrongKey = "object-with-this-key-is-not-exists";
 
-        when(service.getJobById(any(JobKey.class)))
+        when(service.getJobDescription(any(String.class)))
                 .thenThrow(new JobNotFoundException());
 
 
@@ -209,7 +209,7 @@ public class ScheduleControllerTest {
          .andExpect(content()
                 .json(resultJson));
 
-        verify(service, atLeastOnce()).deleteJob(any(JobKey.class));
+        verify(service, atLeastOnce()).deleteJob(any(String.class));
     }
 
     @Test(expected = NestedServletException.class)

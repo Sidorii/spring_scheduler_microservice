@@ -91,6 +91,7 @@ public class JdbcTaskRepositoryTest {
 
     @After
     public void cleanUp() {
+        //TODO: delete job too (from DB)
         repository.deleteTaskForJob(key);
     }
 }

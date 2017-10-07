@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
 public class ScheduleServiceImpl implements ScheduleService {
 
 
@@ -36,7 +38,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public JobKey addJob(JobConfiguration configuration) throws ConfigurationException {
+    public String addJob(JobConfiguration configuration) throws ConfigurationException {
 
         if (configuration == null) {
             LOGGER.error("JobConfiguration is null");
@@ -56,7 +58,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleRepository.addJob(detail, trigger, listener);
             LOGGER.debug("New instance added: Job Detail [{}], Trigger [{}], Listener [{}]",
                     detail.getKey().getName(), trigger.getKey().getName(), listener);
-            return detail.getKey();
+            return detail.getKey().getName();
         } catch (SchedulerException e) {
             LOGGER.error(e.toString());
             throw new RuntimeException("Attempt to schedule job [ " + detail.getKey() + " ] with trigger [ "
@@ -66,10 +68,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public void deleteJob(JobKey key) {
+    public void deleteJob(String key) {
+        JobKey jobKey = new JobKey(key);
         try {
-            scheduleRepository.deleteJob(key);
-            taskService.deleteTaskForJob(key);
+            scheduleRepository.deleteJob(jobKey);
+            taskService.deleteTaskForJob(jobKey);
 
         } catch (SchedulerException e) {
             LOGGER.error(e.toString());
@@ -77,24 +80,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    @Override
-    public JobDetail getJobById(JobKey key) {
-        try {
-            return scheduleRepository.getJobById(key);
-
-        } catch (SchedulerException e) {
-            LOGGER.error(e.toString());
-            throw new RuntimeException("Failed finding job [ " + key + " ]. Nested exception: " + e);
-        }
-    }
 
     @Transactional
     @Override
-    public JobDescription getJobDescription(JobKey key) throws ConfigurationException {
+    public JobDescription getJobDescription(String key) throws ConfigurationException {
+        JobKey jobKey = new JobKey(key);
+
         try {
-            JobDetail detail = scheduleRepository.getJobById(key);
-            Trigger trigger = scheduleRepository.getTriggersForJob(key).get(0);
-            Task task = taskService.getTaskForJob(key);
+            JobDetail detail = scheduleRepository.getJobById(jobKey);
+            Trigger trigger = scheduleRepository.getTriggersForJob(jobKey).get(0);
+            Task task = taskService.getTaskForJob(jobKey);
 
             return configurer.buildJobDescription(detail, trigger, task);
 

@@ -38,10 +38,10 @@ public class ScheduleController {
         JobConfiguration jobConfiguration = configuration.getBody();
         LOGGER.debug("Requested JobConfiguration: {} ", jobConfiguration);
 
-        JobKey key = service.addJob(jobConfiguration);
+        String key = service.addJob(jobConfiguration);
 
         Properties properties = new Properties();
-        properties.setProperty("job_id", key.getName());
+        properties.setProperty("job_id", key);
         return BodyWrapper.wrap(properties);
     }
 
@@ -49,7 +49,7 @@ public class ScheduleController {
     @RequestMapping(value = "/{job_id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.FOUND)
     public BodyWrapper<JobDescription> jobById(@PathVariable("job_id") String jobId) throws ConfigurationException {
-        return BodyWrapper.wrap(service.getJobDescription(new JobKey(jobId)));
+        return BodyWrapper.wrap(service.getJobDescription(jobId));
     }
 
 
@@ -57,7 +57,7 @@ public class ScheduleController {
     @ResponseStatus(HttpStatus.OK)
     public Properties deleteTaskById(@PathVariable("job_id") String jobId) {
 
-        service.deleteJob(new JobKey(jobId));
+        service.deleteJob(jobId);
 
         Properties properties = new Properties();
         properties.setProperty("code", HttpStatus.OK.toString());

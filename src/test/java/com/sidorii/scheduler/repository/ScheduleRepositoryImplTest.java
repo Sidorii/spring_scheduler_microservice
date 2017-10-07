@@ -63,8 +63,8 @@ public class ScheduleRepositoryImplTest {
         JobDetail addedJobDetail = repository.scheduler.getJobDetail(key);
         Trigger addedTrigger = repository.scheduler.getTriggersOfJob(key).get(0);
 
-        assertSame(detail, addedJobDetail);
-        assertSame(cronTrigger, addedTrigger);
+        assertEquals(detail, addedJobDetail);
+        assertEquals(cronTrigger, addedTrigger);
     }
 
     @Test
@@ -78,8 +78,8 @@ public class ScheduleRepositoryImplTest {
         Trigger addedTrigger = repository.scheduler.getTriggersOfJob(key).get(0);
         List<SchedulerListener> listenerList = repository.scheduler.getListenerManager().getSchedulerListeners();
 
-        assertSame(detail, addedJobDetail);
-        assertSame(simpleTrigger, addedTrigger);
+        assertEquals(detail, addedJobDetail);
+        assertEquals(simpleTrigger, addedTrigger);
         assertTrue(listenerList.contains(listener));
     }
 
@@ -99,7 +99,7 @@ public class ScheduleRepositoryImplTest {
         repository.scheduler.scheduleJob(detail, cronTrigger);
         JobDetail retrievedDetail = repository.getJobById(key);
 
-        assertSame(detail, retrievedDetail);
+        assertEquals(detail, retrievedDetail);
     }
 
     @Test

@@ -4,21 +4,22 @@ import com.sidorii.scheduler.model.exception.ConfigurationException;
 import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.model.job.config.JobDescription;
 import com.sidorii.scheduler.model.task.Task;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 
+import javax.validation.constraints.NotNull;
+
 public interface ScheduleService {
 
-    JobKey addJob(JobConfiguration configuration) throws ConfigurationException;
+    String addJob(JobConfiguration configuration) throws ConfigurationException;
 
-    void deleteJob(JobKey key);
+    void deleteJob(@NotNull @NotEmpty String key);
 
-    JobDetail getJobById(JobKey key);
+    JobDescription getJobDescription(@NotNull @NotEmpty String key) throws ConfigurationException;
 
-    JobDescription getJobDescription(JobKey key) throws ConfigurationException;
+    default void suspendJob(@NotNull @NotEmpty String key){};
 
-    default void suspendJob(JobKey key){};
-
-    default void resumeJob(JobKey key){};
+    default void resumeJob(@NotNull @NotEmpty String key){};
 }
