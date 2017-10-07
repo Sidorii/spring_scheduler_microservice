@@ -8,6 +8,7 @@ import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.model.task.HttpTask;
 import com.sidorii.scheduler.util.BodyWrapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
+    @Ignore
     public void testCreateHttpTask() throws Exception {
 
         MockMvc mockMvc = standaloneSetup(controller).build();
@@ -92,6 +94,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
+    @Ignore
     public void testGetTask() throws Exception {
 
         MockMvc mockMvc = standaloneSetup(controller).build();
@@ -102,6 +105,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
+    @Ignore
     public void testJsonParser() throws IOException {
 
         BodyWrapper<JobConfiguration> configurationBodyWrapper =
@@ -112,6 +116,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
+    @Ignore
     public void testTest() throws IOException {
         String jobJ = mapper.writeValueAsString(jobConfiguration);
 

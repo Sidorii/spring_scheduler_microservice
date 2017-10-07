@@ -70,6 +70,7 @@ public class ScheduleTest {
     }
 
     @Test //Cron trigger triggered
+    @Ignore
     public void testSchedule() throws ConfigurationException, InterruptedException, SchedulerException {
 
         service.addJob(jobConfiguration);

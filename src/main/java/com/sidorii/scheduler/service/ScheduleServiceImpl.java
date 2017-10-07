@@ -88,6 +88,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    @Transactional
     @Override
     public JobDescription getJobDescription(JobKey key) throws ConfigurationException {
         try {

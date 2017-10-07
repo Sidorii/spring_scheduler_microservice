@@ -9,6 +9,7 @@ import com.sidorii.scheduler.model.task.Task;
 import com.sidorii.scheduler.util.JobConfigUtil;
 import com.sidorii.scheduler.util.TaskTypeResolver;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,6 +49,7 @@ public class JobConfiguration {
     private URL callbackUrl;
 
     @NotNull(message = "{conf.task}")
+    @Valid
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.CUSTOM,
             include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
