@@ -36,8 +36,9 @@ public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask> {
     @Override
     public void executeTask(HttpTask task, JobExecutionContext context) {
 
-        try {
             JobDataMap jobData = context.getJobDetail().getJobDataMap();
+
+            try {
 
             CustomHttpHeaders httpHeaders = task.getHeaders();
             HttpMethod method = task.getMethod();
@@ -66,6 +67,8 @@ public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask> {
 
             LOGGER.debug("Task [{}] executed successfully", context.getJobDetail().getKey());
         } catch (URISyntaxException e) {
+                jobData.put(JobConfigurer.CODE, HttpStatus.BAD_REQUEST);
+                jobData.putIfAbsent(JobConfigurer.BODY, e.getMessage());
             LOGGER.error(e.getMessage());
         }
 

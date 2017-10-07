@@ -33,6 +33,8 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
             {
                 put(TIME_ZONE, timeZone.getID());
                 put(TYPE, configuration.getType());
+                put(CODE,0);
+                put(BODY, null);
 
                 if (configuration.getCallbackUrl() != null) {
                     put(CALLBACK_URL, configuration.getCallbackUrl().toString());
@@ -49,6 +51,10 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
 
         return detail;
     }
+
+
+
+
 
     @Override
     public Trigger buildTrigger(JobConfiguration configuration) throws ConfigurationException {
@@ -68,6 +74,9 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
     }
 
 
+
+
+
     @Override
     public JobDescription buildJobDescription(JobDetail detail, Trigger trigger, Task task) {
         JobDescription description = new JobDescription();
@@ -79,6 +88,9 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
 
         return description;
     }
+
+
+
 
 
     private ScheduleBuilder<?> buildSchedule(JobConfiguration configuration) throws ConfigurationException {
@@ -105,6 +117,10 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
     }
 
 
+
+
+
+
     private void configureDescriptionByTriggerType(JobDescription description, Trigger trigger) {
 
         if (trigger == null) {
@@ -125,6 +141,10 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         }
     }
 
+
+
+
+
     private void configureDescriptionByJobDetail(JobDescription description, JobDetail detail) {
         JobDataMap dataMap = detail.getJobDataMap();
 
@@ -133,7 +153,7 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
         description.setType(dataMap.getString(TYPE));
 
         Integer code = dataMap.containsKey(CODE) ?
-                Integer.parseInt(dataMap.getString(CODE)) : null;
+                dataMap.getInt(CODE) : null;
 
         description.setLastRunResult(code, dataMap.getString(BODY));
 
@@ -145,6 +165,9 @@ public class DefaultJobConfigurerImpl implements JobConfigurer {
             LOGGER.error("Incorrect callback URL: {}", e.getMessage());
         }
     }
+
+
+
 
 
     //    Execution interval must be set in request!! (this method shouldn't exist!)
