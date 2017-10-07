@@ -15,13 +15,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    private Scheduler scheduler;
+    protected Scheduler scheduler;
+
+
 
     @Autowired
     public ScheduleRepositoryImpl(Scheduler scheduler) throws SchedulerException {
         LOGGER.debug("Using schedule [{}] in ScheduleRepository ", scheduler.getSchedulerName());
         this.scheduler = scheduler;
     }
+
 
 
     @Override
@@ -37,12 +40,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         LOGGER.info("Scheduling new job [{}] with trigger [{}]", key.getName(), trigger.getKey().getName());
     }
 
+
+
+
     @Override
     public void addJob(JobDetail detail, Trigger trigger, SchedulerListener schedulerListener) throws SchedulerException {
         scheduler.getListenerManager().addSchedulerListener(schedulerListener);
 
         addJob(detail, trigger);
     }
+
+
+
 
     @Override
     public void deleteJob(JobKey key) throws SchedulerException {
@@ -52,17 +61,26 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         LOGGER.error("Job [{}] successfully removed", key.getName());
     }
 
+
+
+
     @Override
     public JobDetail getJobById(JobKey key) throws SchedulerException {
         throwNullOrAbsent(key, "getJobById()");
         return scheduler.getJobDetail(key);
     }
 
+
+
+
     @Override
     public List<? extends Trigger> getTriggersForJob(JobKey key) throws SchedulerException {
         throwNullOrAbsent(key, "getTriggersForJob()");
         return scheduler.getTriggersOfJob(key);
     }
+
+
+
 
     private void throwNullOrAbsent(JobKey key, String method) throws SchedulerException {
 

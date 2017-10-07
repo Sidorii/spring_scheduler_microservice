@@ -32,9 +32,6 @@ public class JdbcTaskRepositoryTest {
     @Autowired
     public JdbcTaskRepository repository;
 
-    @Autowired
-    private JdbcTemplate template;
-
     private HttpTask task;
     private JobKey key;
 
@@ -52,7 +49,7 @@ public class JdbcTaskRepositoryTest {
         task.setMethod(HttpMethod.POST);
         task.setUrl(new URL("http://test.com"));
 
-        key = new JobKey("test job key");
+        key = new JobKey("test-job-key");
     }
 
     @Test
@@ -67,7 +64,7 @@ public class JdbcTaskRepositoryTest {
     @Test(expected = DataAccessException.class)
     public void testGetThirdPartyTest() {
 
-        Task result = repository.getTaskForJob(new JobKey("third-party key"));
+        repository.getTaskForJob(new JobKey("wrong-key"));
     }
 
     @Test(expected = DuplicateKeyException.class)

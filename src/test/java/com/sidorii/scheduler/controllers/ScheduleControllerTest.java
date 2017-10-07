@@ -1,24 +1,27 @@
 package com.sidorii.scheduler.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sidorii.scheduler.model.CustomHttpHeaders;
+import com.sidorii.scheduler.model.exception.JobNotFoundException;
 import com.sidorii.scheduler.model.job.config.JobConfiguration;
+import com.sidorii.scheduler.model.job.config.JobDescription;
 import com.sidorii.scheduler.model.task.HttpTask;
+import com.sidorii.scheduler.service.ScheduleService;
 import com.sidorii.scheduler.util.BodyWrapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.quartz.JobKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.NestedServletException;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -27,7 +30,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,13 +51,21 @@ public class ScheduleControllerTest {
     @Autowired
     private ScheduleController controller;
 
+    @MockBean
+    private ScheduleService service;
+
+    private MockMvc mockMvc;
+
     @Before
     public void setUp() throws MalformedURLException, JsonProcessingException {
         mapper = new ObjectMapper();
         jobConfiguration = new JobConfiguration();
+        mockMvc = standaloneSetup(controller)
+                .build();
+
 
         HttpTask task = new HttpTask();
-        Date time = Date.from(LocalDateTime.of(2017, 2, 1, 12, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        Date time = Date.from(LocalDateTime.of(2018, 2, 1, 12, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
         task.setUrl(new URL("http://test.com"));
         task.setMethod(HttpMethod.PUT);
         task.setData("test");
@@ -75,55 +89,138 @@ public class ScheduleControllerTest {
         json = mapper.writeValueAsString(BodyWrapper.wrap(jobConfiguration));
     }
 
+
     @Test
-    @Ignore
-    public void testCreateHttpTask() throws Exception {
+    public void testCreateJobFromFullRequest() throws Exception {
 
-        MockMvc mockMvc = standaloneSetup(controller).build();
+        JobKey jobKey = new JobKey("1");
+        String expectedJson = "{\"body\": {\"job_id\": \"1\"}}";
 
-        String resultJson = "{\"body\":{\"job_id\":\"1\"}}";
+
+        when(service.addJob(any(JobConfiguration.class)))
+                .thenReturn(jobKey);
+
 
         mockMvc.perform(post("/jobs")
-                .content(json)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status()
+                        .isCreated())
+                .andExpect(content()
+                        .json(expectedJson));
+
+    }
+
+    @Test
+    public void testPutDefaultValueIfNotPresent() throws Exception {
+        jobConfiguration.setEndTime(null);
+        jobConfiguration.setStartTime(null);
+        jobConfiguration.setTimeZone(null);
+        jobConfiguration.setCallbackUrl(null);
+        jobConfiguration.setExecuteTimes(null);
+
+        HttpTask emptyDefaultTask = new HttpTask();
+
+        CustomHttpHeaders newHeaders = new CustomHttpHeaders();
+        newHeaders.setAuthorization("some value");
+
+        emptyDefaultTask.setHeaders(newHeaders);
+        emptyDefaultTask.setMethod(HttpMethod.POST);
+        emptyDefaultTask.setUrl(new URL("http://localhost:8080/test"));
+        emptyDefaultTask.setData(null);
+
+        jobConfiguration.setTask(emptyDefaultTask);
+
+        json = mapper.writeValueAsString(BodyWrapper.wrap(jobConfiguration));
+
+
+
+        JobKey jobKey = new JobKey("1");
+        String expectedJson = "{\"body\": {\"job_id\": \"1\"}}";
+
+
+        when(service.addJob(any(JobConfiguration.class)))
+                .thenReturn(jobKey);
+
+
+        mockMvc.perform(post("/jobs")
+                        .content(json)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isCreated())
+                .andExpect(content()
+                            .json(expectedJson));
+
+    }
+
+
+    @Test
+    public void testGetExistedJob() throws Exception {
+
+        JobDescription description = new JobDescription();
+        description.setJobId("test-job-id");
+
+        String expectedJson = mapper.writeValueAsString(BodyWrapper.wrap(description));
+
+        when(service.getJobDescription(any(JobKey.class)))
+                .thenReturn(description);
+
+        mockMvc.perform(get("/jobs/{job_key}",description.getJobId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status()
+                        .isFound())
+                .andExpect(content()
+                        .json(expectedJson));
+    }
+
+    @Test
+    public void testGetJobByWrongKey() throws Exception {
+
+        String wrongKey = "object-with-this-key-is-not-exists";
+
+        when(service.getJobById(any(JobKey.class)))
+                .thenThrow(new JobNotFoundException());
+
+
+        mockMvc.perform(get("/jobs/{job_key}", wrongKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status()
+                .isNotFound());
+    }
+
+    @Test
+    public void testDeleteJob() throws Exception {
+
+        String key = "some job key";
+
+
+        String resultJson = "{\"code\": \"200\" ,\"message\": \"job deleted successfully\"}";
+
+        mockMvc.perform(delete("/jobs/{job_key}", key)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
         )
-                .andExpect(status().isCreated())
-                .andExpect(content()
-                        .json(resultJson));
+         .andExpect(status()
+                .isOk())
+         .andExpect(content()
+                .json(resultJson));
+
+        verify(service, atLeastOnce()).deleteJob(any(JobKey.class));
     }
 
-    @Test
-    @Ignore
-    public void testGetTask() throws Exception {
+    @Test(expected = NestedServletException.class)
+    public void testDeleteJobByWrongKey() throws Exception {
 
-        MockMvc mockMvc = standaloneSetup(controller).build();
+        doThrow(new JobNotFoundException()).when(service).deleteJob(any());
 
-        mockMvc.perform(delete("/jobs/1"))
-                .andExpect(content().json("{\"code\":\"200\",\"message\":\"job deleted successfully\"}"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Ignore
-    public void testJsonParser() throws IOException {
-
-        BodyWrapper<JobConfiguration> configurationBodyWrapper =
-                mapper.readValue(json, new TypeReference<BodyWrapper<JobConfiguration>>() {
-                });
-
-        System.out.println(configurationBodyWrapper.getBody());
-    }
-
-    @Test
-    @Ignore
-    public void testTest() throws IOException {
-        String jobJ = mapper.writeValueAsString(jobConfiguration);
-
-        System.out.println(jobJ);
-
-        JobConfiguration configuration = mapper.readValue(jobJ, JobConfiguration.class);
-
-        System.out.println(configuration);
+        mockMvc.perform(delete("/jobs/{job_key}","some key")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
+
