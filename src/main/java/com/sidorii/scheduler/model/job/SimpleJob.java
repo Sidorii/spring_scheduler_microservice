@@ -21,7 +21,7 @@ public class SimpleJob implements Job {
     private TaskRepository repository;
 
     @Autowired
-    @Qualifier("httpExecutorAdapter")
+    @Qualifier("multiTaskAdapter")
     private TaskExecutor taskExecutor;
 
 

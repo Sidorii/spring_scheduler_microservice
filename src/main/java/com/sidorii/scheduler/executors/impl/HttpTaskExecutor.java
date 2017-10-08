@@ -66,7 +66,7 @@ public class HttpTaskExecutor implements AdvancedTaskExecutor<HttpTask> {
             }
 
             LOGGER.debug("Task [{}] executed successfully", context.getJobDetail().getKey());
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
                 jobData.put(JobConfigurer.CODE, HttpStatus.BAD_REQUEST);
                 jobData.putIfAbsent(JobConfigurer.BODY, e.getMessage());
             LOGGER.error(e.getMessage());

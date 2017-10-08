@@ -1,15 +1,21 @@
 package com.sidorii.scheduler.repository;
 
 import com.sidorii.scheduler.model.job.SimpleJob;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -103,6 +109,17 @@ public class QuartzScheduleRepositoryImplTest {
 
         assertEquals(1, triggers.size());
         assertEquals(cronTrigger, triggers.get(0));
+    }
+
+    @After
+    public void tearDown() throws SchedulerException {
+        List<? extends Trigger> triggers = repository.scheduler.getTriggersOfJob(key);
+
+        List<TriggerKey> keys = triggers
+                .stream()
+                .map(Trigger::getKey)
+                .collect(Collectors.toList());
+        repository.scheduler.unscheduleJobs(keys);
     }
 
 }

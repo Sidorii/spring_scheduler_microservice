@@ -14,7 +14,5 @@ public class SchedulerServiceApplicationTests {
 
     @Test
     public void contextLoads() {
-
-        System.out.println(TimeZone.getDefault());
     }
 }
