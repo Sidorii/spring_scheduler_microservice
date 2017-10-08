@@ -3,7 +3,7 @@ package com.sidorii.scheduler.repository;
 import org.quartz.*;
 import java.util.List;
 
-public interface ScheduleRepository {
+public interface QuartzScheduleRepository {
 
 
     void addJob(JobDetail detail, Trigger trigger) throws SchedulerException;

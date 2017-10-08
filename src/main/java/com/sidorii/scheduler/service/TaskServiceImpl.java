@@ -23,40 +23,32 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public void addTask(Task task, JobKey key) {
+    public void addTask(Task task, String key) {
 
-        if (task == null || key == null) {
-            LOGGER.error("Not supported null parameter for addTask({}, {}) method", task, key);
-            throw new RuntimeException("Cannot add Task in repository, while instance or key is null");
-        }
         try {
             repository.addTask(task, key);
 
         } catch (DuplicateKeyException e) {
             LOGGER.error("Attempt to save task with duplicated key is failed.");
-            throw new TaskException("Task with key = " + key.getName() + " already exists");
+            throw new TaskException("Task with key = " + key + " already exists");
         }
     }
 
     @Override
-    public void deleteTaskForJob(JobKey key) {
+    public void deleteTaskForJob(String key) {
         repository.deleteTaskForJob(key);
-        LOGGER.info("Task with key [{}] successfully deleted", key.getName());
+        LOGGER.info("Task with key [{}] successfully deleted", key);
     }
 
     @Override
-    public Task getTaskForJob(JobKey key) {
-
-        if (key == null) {
-            return null;
-        }
+    public Task getTaskForJob(String key) {
 
         try {
             return repository.getTaskForJob(key);
 
         } catch (DataAccessException e) {
-            LOGGER.error("Can't find Task with by key = {}", key.getName());
-            throw new TaskException("Task with key = " + key.getName() + " does not exists");
+            LOGGER.error("Can't find Task with by key = {}", key);
+            throw new TaskException("Task with key = " + key + " does not exists");
         }
     }
 }

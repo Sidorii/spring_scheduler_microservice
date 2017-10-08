@@ -37,7 +37,7 @@ public class SimpleJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
-        Task task = repository.getTaskForJob(jobExecutionContext.getJobDetail().getKey());
+        Task task = repository.getTaskForJob(jobExecutionContext.getJobDetail().getKey().getName());
 
         taskExecutor.executeTask(task, jobExecutionContext);
     }

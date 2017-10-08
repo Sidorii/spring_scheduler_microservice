@@ -11,7 +11,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.sql.Blob;
 import java.sql.ResultSet;
@@ -40,17 +42,17 @@ public class JdbcTaskRepository implements TaskRepository {
 
 
     @Override
-    public void addTask(Task task, JobKey key) {
+    public void addTask(Task task, String key) {
 
         checkNotNull("addTask()", task, key);
 
         try {
             ByteArrayInputStream taskInput = TaskSerializer.serializeTask(task);
 
-            template.update(CREATE, key.getName(), taskInput);
+            template.update(CREATE, key, taskInput);
 
 
-            LOGGER.info("New task with key [{}] added in BD ", key.getName());
+            LOGGER.info("New task with key [{}] added in BD ", key);
         } catch (IOException e) {
             LOGGER.error("Cannot add new task [{}] to DB: {}", task, e.getMessage());
             throw new TaskException("Failed to add new task to DB because: " + e.getCause());
@@ -58,17 +60,17 @@ public class JdbcTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void deleteTaskForJob(JobKey key) {
+    public void deleteTaskForJob(String key) {
         checkNotNull("deleteTaskForJob()", key);
 
-        template.update(DELETE, key.getName());
+        template.update(DELETE, key);
     }
 
     @Override
-    public Task getTaskForJob(JobKey key) {
+    public Task getTaskForJob(String key) {
         checkNotNull("getTaskForJob()", key);
 
-        return template.queryForObject(SELECT, new Object[]{key.getName()}, TaskMapper.INSTANCE);
+        return template.queryForObject(SELECT, new Object[]{key}, TaskMapper.INSTANCE);
     }
 
 

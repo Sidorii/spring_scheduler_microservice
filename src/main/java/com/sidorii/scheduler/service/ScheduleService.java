@@ -8,9 +8,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
 
+@Validated
 public interface ScheduleService {
 
     String addJob(JobConfiguration configuration) throws ConfigurationException;

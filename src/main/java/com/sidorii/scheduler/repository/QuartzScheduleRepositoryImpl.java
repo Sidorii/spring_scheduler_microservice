@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Repository("scheduleRepository")
-public class ScheduleRepositoryImpl implements ScheduleRepository {
+public class QuartzScheduleRepositoryImpl implements QuartzScheduleRepository {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -20,7 +20,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
 
     @Autowired
-    public ScheduleRepositoryImpl(Scheduler scheduler) throws SchedulerException {
+    public QuartzScheduleRepositoryImpl(Scheduler scheduler) throws SchedulerException {
         LOGGER.debug("Using schedule [{}] in ScheduleRepository ", scheduler.getSchedulerName());
         this.scheduler = scheduler;
     }

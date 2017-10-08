@@ -5,20 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.*;
-import org.quartz.impl.JobDetailImpl;
-import org.quartz.impl.triggers.CronTriggerImpl;
-import org.quartz.impl.triggers.SimpleTriggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
@@ -26,14 +19,14 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ScheduleRepositoryImplTest {
+public class QuartzScheduleRepositoryImplTest {
 
-    public ScheduleRepositoryImpl repository;
+    public QuartzScheduleRepositoryImpl repository;
 
     @Autowired
     public Scheduler scheduler;
 
-    public void setRepository(ScheduleRepositoryImpl repository) {
+    public void setRepository(QuartzScheduleRepositoryImpl repository) {
         this.repository = repository;
     }
 
@@ -45,7 +38,7 @@ public class ScheduleRepositoryImplTest {
 
     @Before
     public void setUp() throws SchedulerException {
-        repository = new ScheduleRepositoryImpl(scheduler);
+        repository = new QuartzScheduleRepositoryImpl(scheduler);
 
         detail = newJob(SimpleJob.class).build();
         simpleTrigger = newTrigger().build();

@@ -33,7 +33,7 @@ public class JdbcTaskRepositoryTest {
     public JdbcTaskRepository repository;
 
     private HttpTask task;
-    private JobKey key;
+    private String key;
 
     @Before
     public void setUp() throws MalformedURLException {
@@ -49,7 +49,7 @@ public class JdbcTaskRepositoryTest {
         task.setMethod(HttpMethod.POST);
         task.setUrl(new URL("http://test.com"));
 
-        key = new JobKey("test-job-key");
+        key = "test-job-key";
     }
 
     @Test
@@ -64,7 +64,7 @@ public class JdbcTaskRepositoryTest {
     @Test(expected = DataAccessException.class)
     public void testGetThirdPartyTest() {
 
-        repository.getTaskForJob(new JobKey("wrong-key"));
+        repository.getTaskForJob("wrong-key");
     }
 
     @Test(expected = DuplicateKeyException.class)
@@ -88,6 +88,7 @@ public class JdbcTaskRepositoryTest {
     public void testGetNull() {
         repository.getTaskForJob(null);
     }
+
 
     @After
     public void cleanUp() {

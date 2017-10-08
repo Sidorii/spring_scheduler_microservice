@@ -5,7 +5,7 @@ import com.sidorii.scheduler.model.job.config.JobConfiguration;
 import com.sidorii.scheduler.model.job.config.JobConfigurer;
 import com.sidorii.scheduler.model.job.config.JobDescription;
 import com.sidorii.scheduler.model.task.Task;
-import com.sidorii.scheduler.repository.ScheduleRepository;
+import com.sidorii.scheduler.repository.QuartzScheduleRepository;
 import org.quartz.*;
 import org.quartz.listeners.SchedulerListenerSupport;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     @Qualifier("scheduleRepository")
-    private ScheduleRepository scheduleRepository;
+    private QuartzScheduleRepository scheduleRepository;
 
     @Autowired
     private TaskService taskService;
@@ -40,11 +40,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public String addJob(JobConfiguration configuration) throws ConfigurationException {
 
-        if (configuration == null) {
-            LOGGER.error("JobConfiguration is null");
-            throw new ConfigurationException("Cannot configure Job while configuration = null");
-        }
-
         JobDetail detail = null;
         Trigger trigger = null;
         Task task;
@@ -53,7 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             detail = configurer.buildJob(configuration);
             trigger = configurer.buildTrigger(configuration);
             task = configuration.getTask();
-            taskService.addTask(task, detail.getKey());
+            taskService.addTask(task, detail.getKey().getName());
             SchedulerListener listener = new TaskSchedulerListener();
             scheduleRepository.addJob(detail, trigger, listener);
             LOGGER.debug("New instance added: Job Detail [{}], Trigger [{}], Listener [{}]",
@@ -72,7 +67,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         JobKey jobKey = new JobKey(key);
         try {
             scheduleRepository.deleteJob(jobKey);
-            taskService.deleteTaskForJob(jobKey);
+            taskService.deleteTaskForJob(key);
 
         } catch (SchedulerException e) {
             LOGGER.error(e.toString());
@@ -89,7 +84,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             JobDetail detail = scheduleRepository.getJobById(jobKey);
             Trigger trigger = scheduleRepository.getTriggersForJob(jobKey).get(0);
-            Task task = taskService.getTaskForJob(jobKey);
+            Task task = taskService.getTaskForJob(key);
 
             return configurer.buildJobDescription(detail, trigger, task);
 
@@ -111,7 +106,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
             LOGGER.debug("JobKey in TaskListener is: {}", jobKey.getName());
 
-            taskService.deleteTaskForJob(jobKey);
+            taskService.deleteTaskForJob(jobKey.getName());
         }
 
     }
