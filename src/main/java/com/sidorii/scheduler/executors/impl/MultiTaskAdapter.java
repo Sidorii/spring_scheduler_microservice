@@ -19,8 +19,6 @@ public class MultiTaskAdapter implements TaskExecutor {
     @Autowired
     private HttpTaskExecutor executor;
 
-
-
     @Override
     public void executeTask(Task task, JobExecutionContext context) throws JobExecutionException {
 
